@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>Mobile Duck / UFO / Halloween Blast</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{
+    margin:0;width:100%;height:100%;overflow:hidden;
+    font-family:'Courier New',monospace;user-select:none;touch-action:none;
+    background:#55bfff;cursor:crosshair;
+  }
+  #stage{
+    position:relative;width:100vw;height:100dvh;overflow:hidden;
+    background:linear-gradient(#35a9ff 0%,#91e0ff 55%,#4caf36 55%,#6dd64a 70%,#9b6a2e 70%,#6b431d 100%);
+    touch-action:none;
+  }
+
+  .scenery,.sun,.cloud,.mountains,.lake,.forest,.grass,.ground,.target,.dog,.blood,.piece,.powerup,.flash{
+    pointer-events:none;
+  }
+
+  .sun{position:absolute;right:7%;top:7%;width:clamp(70px,13vw,150px);height:clamp(70px,13vw,150px);border-radius:50%;background:#ffe96b;box-shadow:0 0 0 18px rgba(255,233,107,.25);z-index:1}
+  .cloud{position:absolute;width:clamp(130px,24vw,250px);height:clamp(42px,7vw,75px);background:#fff;border-radius:999px;z-index:2;opacity:.9;filter:drop-shadow(5px 5px 0 rgba(0,0,0,.12))}
+  .cloud:before,.cloud:after{content:"";position:absolute;border-radius:50%;background:#fff}
+  .cloud:before{width:38%;height:120%;left:14%;top:-45%}.cloud:after{width:50%;height:160%;right:13%;top:-70%}
+  .c1{left:5%;top:17%;transform:scale(.75)}.c2{left:40%;top:10%;transform:scale(.95)}.c3{left:73%;top:21%;transform:scale(.6)}
+  .mountains{position:absolute;left:0;right:0;bottom:29%;height:22%;z-index:3;background:linear-gradient(135deg,transparent 25%,#2d6f9b 25.5% 41%,#d7f8ff 41.5% 46%,#2d6f9b 46.5% 62%,transparent 62.5%) 0 100%/36% 95% no-repeat,linear-gradient(135deg,transparent 22%,#1f557c 22.5% 40%,#fff 40.5% 46%,#1f557c 46.5% 64%,transparent 64.5%) 34% 100%/40% 100% no-repeat,linear-gradient(135deg,transparent 25%,#2d6f9b 25.5% 41%,#d7f8ff 41.5% 46%,#2d6f9b 46.5% 62%,transparent 62.5%) 75% 100%/34% 85% no-repeat}
+  .lake{position:absolute;left:0;right:0;bottom:24%;height:8%;z-index:4;background:repeating-linear-gradient(0deg,rgba(255,255,255,.35) 0 3px,transparent 3px 13px),linear-gradient(90deg,#2fb7d8,#80e9ff,#2fb7d8)}
+  .forest{position:absolute;left:0;right:0;bottom:27%;height:9%;z-index:5;background:repeating-linear-gradient(90deg,#165f2a 0 18px,#0d481f 18px 30px,#237c34 30px 45px);clip-path:polygon(0 100%,0 55%,3% 20%,6% 65%,9% 24%,12% 60%,15% 18%,18% 63%,21% 30%,24% 58%,27% 20%,30% 63%,33% 28%,36% 60%,39% 18%,42% 65%,45% 28%,48% 58%,51% 16%,54% 64%,57% 26%,60% 60%,63% 22%,66% 62%,69% 28%,72% 60%,75% 20%,78% 64%,81% 30%,84% 58%,87% 22%,90% 60%,93% 28%,96% 62%,100% 55%,100% 100%)}
+  .grass{position:absolute;left:0;right:0;bottom:15%;height:16%;z-index:20;background:repeating-linear-gradient(88deg,#174f11 0 5px,transparent 5px 14px),repeating-linear-gradient(96deg,#9cff3d 0 7px,#49ad22 7px 14px,transparent 14px 22px),linear-gradient(#79e33c,#2e8c25)}
+  .ground{position:absolute;left:0;right:0;bottom:0;height:18%;z-index:10;background:radial-gradient(circle,rgba(0,0,0,.16) 0 2px,transparent 3px) 0 0/38px 22px,linear-gradient(#ad762f,#75461e)}
+
+  .panel{background:#050505;border:clamp(3px,.9vw,5px) solid #7f701c;box-shadow:inset 0 0 0 2px #171717,4px 4px 0 rgba(0,0,0,.45);color:#d7ff28;text-shadow:3px 3px 0 #000;z-index:200}
+  .hud{position:absolute;top:env(safe-area-inset-top,0);left:0;margin:8px;padding:8px 10px;max-width:calc(100vw - 16px);pointer-events:none}
+  .hud h1{margin:0 0 2px;font-size:clamp(21px,7vw,48px);line-height:1;white-space:nowrap}
+  .hud p{margin:0;color:#fff;font-size:clamp(12px,3.6vw,22px)}
+  .round{position:absolute;top:env(safe-area-inset-top,0);right:0;margin:8px;padding:8px 10px;text-align:center;font-size:clamp(14px,4.6vw,32px);line-height:1;pointer-events:none}
+  .bottom-ui{position:absolute;left:50%;bottom:calc(72px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:8px 10px;white-space:nowrap;pointer-events:none}
+  .shells{display:flex;gap:clamp(4px,1.5vw,10px);align-items:center}
+  .shell{width:clamp(16px,5vw,34px);height:clamp(31px,9vw,58px);border:3px solid #111;background:linear-gradient(#d71920 0 62%,#eee 62% 100%);box-shadow:3px 3px 0 rgba(0,0,0,.4)}
+  .shell.used{opacity:.25;filter:grayscale(1)}
+  .controls{position:absolute;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:2000;display:flex;gap:8px;justify-content:center;pointer-events:auto}
+  .btn{pointer-events:auto;border:4px solid #111;background:#f7d036;color:#111;font-weight:bold;font-size:clamp(13px,4vw,22px);padding:10px 12px;border-radius:10px;box-shadow:4px 4px 0 rgba(0,0,0,.45);font-family:inherit;touch-action:manipulation}
+  .btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 rgba(0,0,0,.45)}
+
+  .dog{position:absolute;left:5%;bottom:14%;width:clamp(92px,22vw,190px);height:clamp(82px,20vw,170px);z-index:80;filter:drop-shadow(5px 5px 0 rgba(0,0,0,.35));transition:transform .3s ease}
+  .dog.down{transform:rotate(90deg) translate(18px,40px);transform-origin:center bottom}
+  .dog-body{position:absolute;left:15%;bottom:7%;width:58%;height:41%;background:#a55422;border:4px solid #111;border-radius:36%}
+  .dog-head{position:absolute;left:45%;top:20%;width:37%;height:35%;background:#a55422;border:4px solid #111;border-radius:45%;z-index:3}
+  .dog-snout{position:absolute;left:68%;top:34%;width:24%;height:18%;background:#fff;border:4px solid #111;border-radius:45%;z-index:4}
+  .dog-ear{position:absolute;left:38%;top:22%;width:19%;height:35%;background:#20120b;border:4px solid #111;border-radius:40%;z-index:4}
+  .dog-eye{position:absolute;left:67%;top:31%;width:6%;height:6%;background:#111;border-radius:50%;z-index:5}
+  .dog-tail{position:absolute;left:2%;bottom:28%;width:24%;height:8%;background:#a55422;border:4px solid #111;border-radius:999px;transform:rotate(-38deg)}
+  .dog-leg{position:absolute;bottom:0;width:12%;height:24%;background:#fff;border:4px solid #111}.leg1{left:29%}.leg2{left:59%}
+
+  .target{position:absolute;width:var(--size);height:calc(var(--size)*.75);transform:translate(-50%,-50%);filter:drop-shadow(6px 6px 0 rgba(0,0,0,.35));z-index:120;will-change:transform,left,top}
+  .duck-body{position:absolute;left:34%;top:43%;width:50%;height:36%;border-radius:45% 55% 50% 50%;background:#e9e9e9;border:calc(var(--size)*.025) solid #111}
+  .duck-wing{position:absolute;left:39%;top:17%;width:44%;height:40%;border-radius:55% 25% 60% 35%;background:#222;border:calc(var(--size)*.022) solid #111;transform-origin:left bottom;animation:wingFlap .22s steps(2) infinite;z-index:3}
+  .duck-neck{position:absolute;left:22%;top:31%;width:18%;height:34%;border-radius:999px;background:#20893a;border:calc(var(--size)*.022) solid #111;transform:rotate(-12deg);z-index:4}
+  .duck-head{position:absolute;left:7%;top:18%;width:29%;height:32%;border-radius:50%;background:#28a745;border:calc(var(--size)*.025) solid #111;z-index:5}
+  .duck-beak{position:absolute;left:-4%;top:31%;width:18%;height:10%;background:#ff8c00;border:calc(var(--size)*.015) solid #111;z-index:6}
+  .duck-eye{position:absolute;left:24%;top:27%;width:5%;height:6%;border-radius:50%;background:white;box-shadow:inset 2px 0 0 #111;z-index:7}
+  .duck-foot{position:absolute;width:9%;height:8%;background:#ff8c00;border:calc(var(--size)*.012) solid #111;bottom:11%}.f1{left:52%;transform:rotate(18deg)}.f2{left:66%;transform:rotate(-8deg)}
+  .greenDuck .duck-head,.greenDuck .duck-neck{background:#28a745}.blackDuck .duck-head,.blackDuck .duck-neck,.blackDuck .duck-wing{background:#111}.blackDuck .duck-body{background:#2b2b2b}.purpleDuck .duck-head,.purpleDuck .duck-neck{background:#5a2ca0}.purpleDuck .duck-wing{background:#c2a96b}.purpleDuck .duck-body{background:#d9c28b}
+  @keyframes wingFlap{0%{transform:rotate(-36deg)}100%{transform:rotate(32deg)}}
+
+  .ufo-dome{position:absolute;left:50%;top:24%;width:44%;height:28%;transform:translateX(-50%);border-radius:999px 999px 18px 18px;background:rgba(150,240,255,.82);border:calc(var(--size)*.03) solid #111}
+  .ufo-base{position:absolute;left:50%;top:50%;width:86%;height:34%;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(#eaeaea,#777);border:calc(var(--size)*.035) solid #111}
+  .ufo-light{position:absolute;top:49%;width:10%;height:13%;border-radius:50%;background:#ffe600;box-shadow:0 0 16px #ffe600}.u1{left:28%}.u2{left:45%}.u3{right:28%}
+  .beam{position:absolute;left:50%;top:55%;width:35%;height:55%;transform:translateX(-50%);background:linear-gradient(rgba(108,255,130,.42),transparent);clip-path:polygon(35% 0,65% 0,100% 100%,0 100%)}
+
+  body.halloween #stage{background:linear-gradient(#13001d 0%,#2b0640 42%,#5a2500 68%,#211000 100%)}
+  body.halloween .sun{background:#ff8c1a;box-shadow:0 0 0 18px rgba(255,140,26,.25),0 0 45px rgba(255,120,0,.75)}
+  body.halloween .cloud{background:#4b3a61;opacity:.75}
+  body.halloween .cloud:before,body.halloween .cloud:after{background:#4b3a61}
+  body.halloween .mountains{filter:brightness(.45) saturate(1.5)}
+  body.halloween .lake{background:repeating-linear-gradient(0deg,rgba(255,135,40,.25) 0 3px,transparent 3px 13px),linear-gradient(90deg,#35114d,#793c00,#35114d)}
+  body.halloween .forest{background:repeating-linear-gradient(90deg,#12051b 0 18px,#1f092d 18px 30px,#2f0a3e 30px 45px)}
+  body.halloween .grass{background:repeating-linear-gradient(88deg,#14051e 0 5px,transparent 5px 14px),repeating-linear-gradient(96deg,#4f1669 0 7px,#1d082b 7px 14px,transparent 14px 22px),linear-gradient(#2b0a3d,#12051b)}
+  body.halloween .ground{background:radial-gradient(circle,rgba(255,160,40,.14) 0 2px,transparent 3px) 0 0/38px 22px,linear-gradient(#3b2100,#160900)}
+
+  .batty{position:absolute;width:var(--size);height:calc(var(--size)*.65);z-index:120;filter:drop-shadow(6px 6px 0 rgba(0,0,0,.45))}
+  .bat-wing-l,.bat-wing-r{position:absolute;top:22%;width:45%;height:45%;background:#101;clip-path:polygon(0 20%,100% 0,70% 40%,100% 80%,55% 62%,15% 100%);border:calc(var(--size)*.02) solid #000}.bat-wing-l{left:1%}.bat-wing-r{right:1%;transform:scaleX(-1)}
+  .bat-body{position:absolute;left:50%;top:45%;width:32%;height:42%;transform:translate(-50%,-50%);border-radius:50%;background:#270038;border:calc(var(--size)*.025) solid #000}
+  .bat-eye-l,.bat-eye-r{position:absolute;top:35%;width:7%;height:8%;border-radius:50%;background:#ffea00;box-shadow:0 0 8px #ffea00}.bat-eye-l{left:43%}.bat-eye-r{right:43%}
+  .ghost{position:absolute;width:var(--size);height:calc(var(--size)*.8);z-index:120;filter:drop-shadow(6px 6px 0 rgba(0,0,0,.35))}
+  .ghost-body{position:absolute;inset:5% 15% 0 15%;background:#f3f3ff;border:calc(var(--size)*.025) solid #111;border-radius:50% 50% 20% 20%;clip-path:polygon(0 25%,20% 0,80% 0,100% 25%,100% 100%,82% 84%,64% 100%,48% 84%,32% 100%,16% 84%,0 100%)}
+  .ghost-eye-l,.ghost-eye-r{position:absolute;top:35%;width:12%;height:15%;border-radius:50%;background:#111}.ghost-eye-l{left:36%}.ghost-eye-r{right:36%}
+  .pumpkin{position:absolute;width:var(--size);height:calc(var(--size)*.75);z-index:120;filter:drop-shadow(6px 6px 0 rgba(0,0,0,.35))}
+  .pumpkin-body{position:absolute;left:10%;top:18%;width:80%;height:65%;background:#f57c00;border:calc(var(--size)*.03) solid #111;border-radius:45%;box-shadow:inset 18px 0 0 rgba(128,50,0,.25),inset -18px 0 0 rgba(128,50,0,.25)}
+  .pumpkin-stem{position:absolute;left:46%;top:4%;width:12%;height:20%;background:#3a5a00;border:calc(var(--size)*.018) solid #111}
+  .pumpkin-eye-l,.pumpkin-eye-r{position:absolute;top:40%;width:12%;height:12%;background:#ffe600;clip-path:polygon(50% 0,0 100%,100% 100%)}.pumpkin-eye-l{left:34%}.pumpkin-eye-r{right:34%}
+  .pumpkin-mouth{position:absolute;left:38%;top:59%;width:24%;height:12%;background:#ffe600;clip-path:polygon(0 0,20% 100%,40% 0,60% 100%,80% 0,100% 100%,100% 100%,0 100%)}
+
+  .powerup{position:absolute;width:clamp(58px,13vw,78px);height:clamp(58px,13vw,78px);z-index:130;transform:translate(-50%,-50%);filter:drop-shadow(5px 5px 0 rgba(0,0,0,.35));animation:powerPulse .55s steps(2) infinite}
+  .powerup:before{content:"";position:absolute;inset:4px;background:linear-gradient(#d71920 0 62%,#f2f2f2 62% 100%);border:4px solid #111;border-radius:8px}
+  body.halloween .powerup:before{background:radial-gradient(circle at 35% 35%,#ffb347,#f57c00 65%,#6b2e00);border-radius:50%}
+  .powerup:after{content:"+AMMO";position:absolute;left:50%;top:-24px;transform:translateX(-50%);font-size:clamp(12px,3vw,18px);color:#fff;text-shadow:3px 3px 0 #000;font-weight:bold;white-space:nowrap}
+  @keyframes powerPulse{0%{scale:1;rotate:-8deg}100%{scale:1.15;rotate:8deg}}
+
+  .flash{position:absolute;inset:0;background:rgba(255,255,255,.28);z-index:300;opacity:0}.flash.on{animation:flash .13s ease-out}@keyframes flash{from{opacity:.75}to{opacity:0}}
+  .blood{position:absolute;width:120px;height:120px;transform:translate(-50%,-50%) scale(.2);border-radius:50%;background:radial-gradient(circle,rgba(155,0,0,.95),rgba(105,0,0,.78) 31%,rgba(70,0,0,.42) 48%,transparent 70%);z-index:150;animation:bloodPop .75s ease-out forwards}.blood:before,.blood:after{content:"";position:absolute;inset:16%;border-radius:45% 55% 65% 35%;background:rgba(130,0,0,.72)}
+  body.halloween .blood{background:radial-gradient(circle,rgba(120,255,80,.9),rgba(65,160,30,.72) 33%,rgba(60,0,80,.35) 50%,transparent 70%)}
+  @keyframes bloodPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.1)}15%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.55) rotate(55deg)}}
+  .piece{position:absolute;width:var(--s);height:var(--s);z-index:145;animation:pieceFly 1s ease-out forwards;filter:drop-shadow(3px 3px 0 rgba(0,0,0,.35))}.feather{background:#eee;border:3px solid #111;border-radius:65% 25%}.wing{background:#111;border:3px solid #111;border-radius:55% 20%}.green{background:#28a745;border:3px solid #111;border-radius:50%}.orange{background:#ff8c00;border:3px solid #111;clip-path:polygon(0 20%,100% 50%,0 80%)}.metal{background:linear-gradient(#eee,#777);border:3px solid #111;border-radius:50%}.light{background:#ffe600;border:3px solid #111;border-radius:50%;box-shadow:0 0 12px #ffe600}.purple{background:#7b2cbf;border:3px solid #111;border-radius:50%}@keyframes pieceFly{to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.55)}}
+
+  .overlay{position:absolute;inset:0;z-index:3000;display:none;place-items:center;background:rgba(0,0,0,.58);color:#fff;text-align:center;text-shadow:4px 4px 0 #000;pointer-events:none}
+  .overlay.show{display:grid;pointer-events:auto}
+  .card{padding:28px 34px;pointer-events:auto}.card h2{font-size:clamp(46px,13vw,110px);margin:0 0 12px;color:#ff3b30}.card p{font-size:clamp(26px,7vw,58px);margin:0 0 14px}.card small{font-size:clamp(14px,4vw,26px);color:#d7ff28}.card .btn{min-width:clamp(160px,42vw,240px);min-height:clamp(54px,12vw,80px);margin:8px}
+
+  @media (orientation: portrait){
+    .hud{top:6px;left:6px;right:6px}
+    .round{display:none}
+    .bottom-ui{bottom:calc(78px + env(safe-area-inset-bottom,0px))}
+    .dog{left:2%;bottom:14%}
+    .cloud{opacity:.75}
+  }
+</style>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff8c00">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Duck Blast">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+</head>
+<body>
+<main id="stage">
+  <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="mountains"></div><div class="lake"></div><div class="forest"></div><div class="grass"></div><div class="ground"></div>
+  <section class="hud panel"><h1 id="titleText">DUCK BLAST</h1><p><span id="modeName">Easy</span> · <span id="labelText">Ducks</span>: <span id="count">0</span> · Score: <span id="scoreText">0</span></p></section>
+  <div class="round panel">ROUND<br><strong id="roundNum">01</strong></div>
+  <div class="dog" id="dog"><div class="dog-tail"></div><div class="dog-body"></div><div class="dog-ear"></div><div class="dog-head"></div><div class="dog-snout"></div><div class="dog-eye"></div><div class="dog-leg leg1"></div><div class="dog-leg leg2"></div></div>
+  <div class="bottom-ui panel"><div class="shells" id="shells"></div></div>
+  <div class="controls" id="controls">
+    <button type="button" class="btn" id="resetBtn">RESET</button>
+    <button type="button" class="btn" id="modeBtn">MODE</button>
+    <button type="button" class="btn" id="toggleBtn">UFO</button>
+    <button type="button" class="btn" id="themeBtn">🎃</button>
+  </div>
+  <div class="flash" id="flash"></div>
+  <div class="overlay" id="gameOver">
+    <div class="card panel">
+      <h2>GAME OVER</h2>
+      <p>Score: <span id="finalScore">0</span></p>
+      <button type="button" class="btn" id="playAgainBtn">PLAY AGAIN</button>
+      <button type="button" class="btn" id="themeOverBtn">HALLOWEEN</button><br>
+      <small>Try to beat your high score!</small>
+    </div>
+  </div>
+</main>
+<script>
+const stage=document.getElementById('stage'),shellsEl=document.getElementById('shells'),flash=document.getElementById('flash'),dog=document.getElementById('dog');
+const scoreText=document.getElementById('scoreText'),finalScore=document.getElementById('finalScore'),gameOverEl=document.getElementById('gameOver'),countEl=document.getElementById('count'),modeName=document.getElementById('modeName'),roundNum=document.getElementById('roundNum'),titleText=document.getElementById('titleText'),labelText=document.getElementById('labelText');
+const resetBtn=document.getElementById('resetBtn'),modeBtn=document.getElementById('modeBtn'),toggleBtn=document.getElementById('toggleBtn'),themeBtn=document.getElementById('themeBtn'),playAgainBtn=document.getElementById('playAgainBtn'),themeOverBtn=document.getElementById('themeOverBtn');
+const modes=[
+  {key:'easy',name:'Easy',min:1,max:2,speed:.58,minSize:95,maxSize:135},
+  {key:'medium',name:'Medium',min:1,max:3,speed:.82,minSize:84,maxSize:120},
+  {key:'wild',name:'Wild',min:2,max:4,speed:1.08,minSize:72,maxSize:108}
+];
+let modeIndex=0,mode=modes[0],targets=[],powerUps=[],shots=10,score=0,round=1,last=performance.now(),over=false,dogDown=false,targetMode='ducks',theme='normal',nextPower=5;
+const rand=(a,b)=>Math.random()*(b-a)+a,pick=a=>a[Math.floor(Math.random()*a.length)];
+const duckHTML='<div class="duck-wing"></div><div class="duck-body"></div><div class="duck-neck"></div><div class="duck-head"></div><div class="duck-beak"></div><div class="duck-eye"></div><div class="duck-foot f1"></div><div class="duck-foot f2"></div>';
+const ufoHTML='<div class="beam"></div><div class="ufo-dome"></div><div class="ufo-base"></div><div class="ufo-light u1"></div><div class="ufo-light u2"></div><div class="ufo-light u3"></div>';
+const halloweenTargets=[
+  {cls:'batty',html:'<div class="bat-wing-l"></div><div class="bat-wing-r"></div><div class="bat-body"></div><div class="bat-eye-l"></div><div class="bat-eye-r"></div>'},
+  {cls:'ghost',html:'<div class="ghost-body"></div><div class="ghost-eye-l"></div><div class="ghost-eye-r"></div>'},
+  {cls:'pumpkin',html:'<div class="pumpkin-stem"></div><div class="pumpkin-body"></div><div class="pumpkin-eye-l"></div><div class="pumpkin-eye-r"></div><div class="pumpkin-mouth"></div>'}
+];
+function isMobile(){return Math.min(innerWidth,innerHeight)<700}
+function drawShells(){shellsEl.innerHTML='<span style="margin-right:8px;font-size:clamp(14px,4vw,34px)">SHOTS</span>'+Array.from({length:10},(_,i)=>`<span class="shell ${i>=shots?'used':''}"></span>`).join('')}
+function hud(){
+  modeName.textContent=mode.name; scoreText.textContent=score; roundNum.textContent=String(round).padStart(2,'0');
+  titleText.textContent=theme==='halloween'?'HALLOWEEN BLAST':(targetMode==='ducks'?'DUCK BLAST':'UFO BLAST');
+  labelText.textContent=theme==='halloween'?'Monsters':(targetMode==='ducks'?'Ducks':'UFOs');
+  countEl.textContent=targets.length; toggleBtn.textContent=targetMode==='ducks'?'UFO':'DUCK'; modeBtn.textContent=mode.name.toUpperCase();
+  themeBtn.textContent=theme==='halloween'?'☀️':'🎃'; themeOverBtn.textContent=theme==='halloween'?'NORMAL':'HALLOWEEN';
+}
+function reset(newGame=true){
+  over=false; gameOverEl.classList.remove('show'); shots=10;
+  targets.forEach(t=>t.el.remove()); powerUps.forEach(p=>p.el.remove()); targets=[]; powerUps=[]; nextPower=5;
+  if(newGame){score=0; round=1; dogDown=false; dog.classList.remove('down')}
+  drawShells(); hud(); spawnWave();
+}
+function makeTarget(){
+  const m=isMobile(); const size=rand(mode.minSize,mode.maxSize)*(m?1:1.35);
+  const el=document.createElement('div');
+  if(theme==='halloween'){const h=pick(halloweenTargets); el.className='target '+h.cls; el.innerHTML=h.html;}
+  else{el.className='target '+(targetMode==='ducks'?pick(['greenDuck','blackDuck','purpleDuck']):'ufo'); el.innerHTML=targetMode==='ducks'?duckHTML:ufoHTML;}
+  el.style.setProperty('--size',size+'px'); stage.appendChild(el);
+  const startX=rand(innerWidth*.18,innerWidth*.82),side=startX<innerWidth/2?1:-1,diff=1+(round-1)*.11;
+  return{el,base:size,size,x:startX,y:innerHeight*.66,vx:side*rand(85,145)*mode.speed*diff*(m?.8:1.35),vy:-rand(110,175)*mode.speed*diff*(m?.9:1.25),phase:rand(0,6.28),amp:rand(18,38),dist:0,diff};
+}
+function spawnWave(){
+  if(over)return; targets.forEach(t=>t.el.remove()); targets=[];
+  const total=Math.floor(rand(mode.min,mode.max+1));
+  for(let i=0;i<total;i++)setTimeout(()=>{if(!over){targets.push(makeTarget());hud()}},i*350);
+  hud();
+}
+function makePower(){
+  if(over||powerUps.length||shots>=10)return;
+  const el=document.createElement('div'); el.className='powerup'; stage.appendChild(el);
+  const side=Math.random()<.5?1:-1;
+  powerUps.push({el,x:side>0?-90:innerWidth+90,y:rand(innerHeight*.22,innerHeight*.48),vx:side*rand(95,145)*(isMobile()?.85:1.5),phase:rand(0,6.28)});
+}
+function rect(el,x,y,p=0){const r=el.getBoundingClientRect();return x>=r.left-p&&x<=r.right+p&&y>=r.top-p&&y<=r.bottom+p}
+function blood(x,y){const b=document.createElement('div');b.className='blood';b.style.left=x+'px';b.style.top=y+'px';stage.appendChild(b);setTimeout(()=>b.remove(),800)}
+function explode(x,y,type){
+  const arr=theme==='halloween'?['purple','orange','purple','green','orange','purple','green','orange','purple','green','orange','purple']:(type==='ufo'?['metal','light','metal','metal','light','metal','light','metal','metal','light','metal','metal']:['feather','wing','green','orange','feather','feather','wing','green','orange','feather','wing','green','orange','feather','feather','wing','green','orange']);
+  arr.forEach(c=>{const p=document.createElement('div');p.className='piece '+c;p.style.left=x+'px';p.style.top=y+'px';p.style.setProperty('--s',rand(16,38)+'px');p.style.setProperty('--dx',rand(-180,180)+'px');p.style.setProperty('--dy',rand(-210,130)+'px');p.style.setProperty('--rot',rand(-720,720)+'deg');stage.appendChild(p);setTimeout(()=>p.remove(),1050)});
+}
+function shoot(x,y){
+  if(over||shots<=0)return;
+  shots--; drawShells(); flash.classList.remove('on'); void flash.offsetWidth; flash.classList.add('on');
+  if(!dogDown&&rect(dog,x,y,8)){dogDown=true;dog.classList.add('down');score=Math.max(0,score-25)}
+  for(const p of [...powerUps])if(rect(p.el,x,y,24)){shots=Math.min(10,shots+4);score+=50;p.el.remove();powerUps=powerUps.filter(a=>a!==p);drawShells()}
+  let hit=null; for(const t of targets){if(rect(t.el,x,y,Math.max(24,t.size*.22))){hit=t;break}}
+  if(hit){const r=hit.el.getBoundingClientRect(),hx=r.left+r.width/2,hy=r.top+r.height/2;blood(hx,hy);explode(hx,hy,targetMode==='ducks'?'duck':'ufo');score+=Math.round(100+round*15+(1-hit.size/hit.base)*120);hit.el.remove();targets=targets.filter(t=>t!==hit);if(!targets.length&&shots>0){round++;setTimeout(spawnWave,500)}}
+  hud();
+  if(shots<=0)setTimeout(()=>{over=true;finalScore.textContent=score;gameOverEl.classList.add('show');targets.forEach(t=>t.el.remove());powerUps.forEach(p=>p.el.remove());targets=[];powerUps=[];hud()},650);
+}
+function animate(now){
+  const dt=Math.min((now-last)/1000,.035); last=now;
+  if(!over){
+    nextPower-=dt; if(nextPower<=0){makePower();nextPower=rand(5.5,9.5)}
+    for(const p of [...powerUps]){p.phase+=dt*3;p.x+=p.vx*dt;p.el.style.left=p.x+'px';p.el.style.top=(p.y+Math.sin(p.phase)*24)+'px';if(p.x<-130||p.x>innerWidth+130){p.el.remove();powerUps=powerUps.filter(a=>a!==p)}}
+    for(const t of [...targets]){
+      t.phase+=dt*(2.2+t.diff*.25); t.dist+=dt*.07*t.diff; t.size=t.base*Math.max(.5,1-t.dist); t.el.style.setProperty('--size',t.size+'px');
+      t.x+=t.vx*dt; t.y+=t.vy*dt+Math.sin(t.phase)*t.amp*dt; t.vy-=10*dt;
+      if(t.y<80)t.vy+=50*dt; if(t.y>innerHeight*.56)t.vy-=70*dt; if(t.x<35||t.x>innerWidth-35)t.vx*=-1;
+      if(t.y<-t.size||t.size<t.base*.51){t.el.remove();targets=targets.filter(a=>a!==t);if(!targets.length&&shots>0){round++;spawnWave()}continue}
+      const flip=theme!=='halloween'&&targetMode==='ducks'&&t.vx<0?' scaleX(-1)':'';
+      const angle=theme==='halloween'?Math.sin(t.phase)*10:(targetMode==='ducks'?Math.atan2(t.vy,t.vx)*180/Math.PI*.18:Math.sin(t.phase)*8);
+      t.el.style.left=t.x+'px'; t.el.style.top=t.y+'px'; t.el.style.transform=`translate(-50%,-50%)${flip} rotate(${angle}deg)`;
+    }
+  }
+  requestAnimationFrame(animate);
+}
+function buttonPress(e,fn){
+  e.preventDefault();
+  e.stopPropagation();
+  if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+  fn();
+}
+function isInsideControls(x,y){
+  const controls=document.getElementById('controls');
+  const overlay=document.getElementById('gameOver');
+  const boxes=[controls];
+  if(overlay.classList.contains('show')) boxes.push(overlay);
+  return boxes.some(el=>{
+    const r=el.getBoundingClientRect();
+    return x>=r.left && x<=r.right && y>=r.top && y<=r.bottom;
+  });
+}
+function toggleTheme(){theme=theme==='halloween'?'normal':'halloween';document.body.classList.toggle('halloween',theme==='halloween');reset(false)}
+
+// Hard-block button touches from becoming shots.
+document.querySelectorAll('.btn').forEach(btn=>{
+  ['pointerdown','pointerup','touchstart','touchend','click'].forEach(type=>{
+    btn.addEventListener(type,e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(e.stopImmediatePropagation) e.stopImmediatePropagation();
+    },{passive:false});
+  });
+});
+
+// Shoot only when the touch is outside the bottom controls and outside the game-over overlay.
+stage.addEventListener('pointerdown',e=>{
+  if(isInsideControls(e.clientX,e.clientY) || e.target.closest('.btn') || over) return;
+  shoot(e.clientX,e.clientY);
+},{passive:false});
+resetBtn.addEventListener('pointerdown',e=>buttonPress(e,()=>reset(true)),true);
+modeBtn.addEventListener('pointerdown',e=>buttonPress(e,()=>{modeIndex=(modeIndex+1)%modes.length;mode=modes[modeIndex];reset(false)}),true);
+toggleBtn.addEventListener('pointerdown',e=>buttonPress(e,()=>{targetMode=targetMode==='ducks'?'ufos':'ducks';reset(false)}),true);
+themeBtn.addEventListener('pointerdown',e=>buttonPress(e,toggleTheme),true);
+playAgainBtn.addEventListener('pointerdown',e=>buttonPress(e,()=>reset(true)),true);
+themeOverBtn.addEventListener('pointerdown',e=>buttonPress(e,toggleTheme),true);
+document.addEventListener('keydown',e=>{if(e.key==='1'){modeIndex=0;mode=modes[0];reset(false)}if(e.key==='2'){modeIndex=1;mode=modes[1];reset(false)}if(e.key==='3'){modeIndex=2;mode=modes[2];reset(false)}if(e.code==='Space')reset(true);if(e.key.toLowerCase()==='q'){targetMode=targetMode==='ducks'?'ufos':'ducks';reset(false)}if(e.key.toLowerCase()==='h'){toggleTheme()}if(e.key.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+addEventListener('orientationchange',()=>setTimeout(()=>reset(false),250));
+reset(true); requestAnimationFrame(animate);
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(console.error);
+  });
+}
+</script>
+
+</body>
+</html>
