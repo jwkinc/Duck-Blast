@@ -1,7 +1,7 @@
 {
   "name": "Duck Blast Halloween",
   "short_name": "Duck Blast",
-  "description": "A mobile-friendly Duck Hunt inspired arcade target game with Halloween mode.",
+  "description": "A mobile-friendly arcade target game with Halloween mode and zombie dog.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

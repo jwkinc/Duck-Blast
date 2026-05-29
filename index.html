@@ -26,7 +26,12 @@
   .cloud:before,.cloud:after{content:"";position:absolute;border-radius:50%;background:#fff}
   .cloud:before{width:38%;height:120%;left:14%;top:-45%}.cloud:after{width:50%;height:160%;right:13%;top:-70%}
   .c1{left:5%;top:17%;transform:scale(.75)}.c2{left:40%;top:10%;transform:scale(.95)}.c3{left:73%;top:21%;transform:scale(.6)}
-  .mountains{position:absolute;left:0;right:0;bottom:29%;height:22%;z-index:3;background:linear-gradient(135deg,transparent 25%,#2d6f9b 25.5% 41%,#d7f8ff 41.5% 46%,#2d6f9b 46.5% 62%,transparent 62.5%) 0 100%/36% 95% no-repeat,linear-gradient(135deg,transparent 22%,#1f557c 22.5% 40%,#fff 40.5% 46%,#1f557c 46.5% 64%,transparent 64.5%) 34% 100%/40% 100% no-repeat,linear-gradient(135deg,transparent 25%,#2d6f9b 25.5% 41%,#d7f8ff 41.5% 46%,#2d6f9b 46.5% 62%,transparent 62.5%) 75% 100%/34% 85% no-repeat}
+  .mountains{position:absolute;left:0;right:0;bottom:29%;height:22%;z-index:3;
+    background:
+      linear-gradient(135deg,transparent 32%,#315f3a 32.5% 62%,transparent 62.5%) 0 100%/28% 100% repeat-x,
+      linear-gradient(135deg,transparent 38%,#23462e 38.5% 70%,transparent 70.5%) 14% 100%/24% 82% repeat-x,
+      linear-gradient(135deg,transparent 42%,#17351f 42.5% 76%,transparent 76.5%) 8% 100%/18% 66% repeat-x;
+  }
   .lake{position:absolute;left:0;right:0;bottom:24%;height:8%;z-index:4;background:repeating-linear-gradient(0deg,rgba(255,255,255,.35) 0 3px,transparent 3px 13px),linear-gradient(90deg,#2fb7d8,#80e9ff,#2fb7d8)}
   .forest{position:absolute;left:0;right:0;bottom:27%;height:9%;z-index:5;background:repeating-linear-gradient(90deg,#165f2a 0 18px,#0d481f 18px 30px,#237c34 30px 45px);clip-path:polygon(0 100%,0 55%,3% 20%,6% 65%,9% 24%,12% 60%,15% 18%,18% 63%,21% 30%,24% 58%,27% 20%,30% 63%,33% 28%,36% 60%,39% 18%,42% 65%,45% 28%,48% 58%,51% 16%,54% 64%,57% 26%,60% 60%,63% 22%,66% 62%,69% 28%,72% 60%,75% 20%,78% 64%,81% 30%,84% 58%,87% 22%,90% 60%,93% 28%,96% 62%,100% 55%,100% 100%)}
   .grass{position:absolute;left:0;right:0;bottom:15%;height:16%;z-index:20;background:repeating-linear-gradient(88deg,#174f11 0 5px,transparent 5px 14px),repeating-linear-gradient(96deg,#9cff3d 0 7px,#49ad22 7px 14px,transparent 14px 22px),linear-gradient(#79e33c,#2e8c25)}
@@ -45,7 +50,7 @@
   .btn{pointer-events:auto;border:4px solid #111;background:#f7d036;color:#111;font-weight:bold;font-size:clamp(13px,4vw,22px);padding:10px 12px;border-radius:10px;box-shadow:4px 4px 0 rgba(0,0,0,.45);font-family:inherit;touch-action:manipulation}
   .btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 rgba(0,0,0,.45)}
 
-  .dog{position:absolute;left:5%;bottom:14%;width:clamp(92px,22vw,190px);height:clamp(82px,20vw,170px);z-index:80;filter:drop-shadow(5px 5px 0 rgba(0,0,0,.35));transition:transform .3s ease}
+  .dog{position:absolute;left:1%;bottom:18%;width:clamp(92px,22vw,190px);height:clamp(82px,20vw,170px);z-index:80;filter:drop-shadow(5px 5px 0 rgba(0,0,0,.35));transition:transform .3s ease}
   .dog.down{transform:rotate(90deg) translate(18px,40px);transform-origin:center bottom}
   .dog-body{position:absolute;left:15%;bottom:7%;width:58%;height:41%;background:#a55422;border:4px solid #111;border-radius:36%}
   .dog-head{position:absolute;left:45%;top:20%;width:37%;height:35%;background:#a55422;border:4px solid #111;border-radius:45%;z-index:3}
@@ -114,9 +119,85 @@
     .hud{top:6px;left:6px;right:6px}
     .round{display:none}
     .bottom-ui{bottom:calc(78px + env(safe-area-inset-bottom,0px))}
-    .dog{left:2%;bottom:14%}
+    .dog{left:0%;bottom:18%}
     .cloud{opacity:.75}
   }
+
+  /* Zombie dog + cleaner mountain/tree backdrop update */
+  .spooky-trees{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:26%;
+    height:18%;
+    z-index:6;
+    pointer-events:none;
+    background:
+      repeating-linear-gradient(90deg,
+        transparent 0 26px,
+        rgba(20,45,20,.85) 26px 34px,
+        transparent 34px 58px);
+    clip-path:polygon(
+      0 100%,0 72%,3% 38%,6% 72%,9% 30%,12% 75%,15% 42%,18% 70%,
+      21% 25%,24% 72%,27% 38%,30% 70%,33% 22%,36% 75%,39% 40%,
+      42% 72%,45% 28%,48% 76%,51% 35%,54% 70%,57% 24%,60% 75%,
+      63% 39%,66% 72%,69% 26%,72% 75%,75% 42%,78% 70%,81% 23%,
+      84% 74%,87% 37%,90% 72%,93% 29%,96% 75%,100% 68%,100% 100%);
+  }
+
+  body.halloween .spooky-trees{
+    background:
+      repeating-linear-gradient(90deg,
+        transparent 0 24px,
+        rgba(7,2,12,.96) 24px 34px,
+        transparent 34px 56px);
+  }
+
+  body.halloween .mountains{
+    background:
+      linear-gradient(135deg,transparent 32%,#12051e 32.5% 62%,transparent 62.5%) 0 100%/28% 100% repeat-x,
+      linear-gradient(135deg,transparent 38%,#08020d 38.5% 70%,transparent 70.5%) 14% 100%/24% 82% repeat-x,
+      linear-gradient(135deg,transparent 42%,#020004 42.5% 76%,transparent 76.5%) 8% 100%/18% 66% repeat-x;
+    filter:none;
+  }
+
+  body.halloween .dog-body,
+  body.halloween .dog-head{
+    background:#5c7a38;
+  }
+
+  body.halloween .dog-ear{
+    background:#151515;
+  }
+
+  body.halloween .dog-snout{
+    background:#d7d7d7;
+  }
+
+  body.halloween .dog-eye{
+    background:#d7ff28;
+    box-shadow:0 0 12px #d7ff28, 0 0 24px #83ff00;
+  }
+
+  body.halloween .dog-body{
+    box-shadow:
+      inset -8px -8px 0 rgba(0,0,0,.25),
+      inset 12px 8px 0 rgba(120,255,80,.2);
+  }
+
+  body.halloween .dog:after{
+    content:"";
+    position:absolute;
+    left:52%;
+    top:48%;
+    width:18%;
+    height:8%;
+    background:#7cff55;
+    border:3px solid #111;
+    border-radius:50%;
+    z-index:9;
+  }
+
 </style>
 
 <link rel="manifest" href="manifest.json">
@@ -129,7 +210,7 @@
 </head>
 <body>
 <main id="stage">
-  <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="mountains"></div><div class="lake"></div><div class="forest"></div><div class="grass"></div><div class="ground"></div>
+  <div class="sun"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="mountains"></div><div class="lake"></div><div class="forest"></div><div class="spooky-trees"></div><div class="grass"></div><div class="ground"></div>
   <section class="hud panel"><h1 id="titleText">DUCK BLAST</h1><p><span id="modeName">Easy</span> · <span id="labelText">Ducks</span>: <span id="count">0</span> · Score: <span id="scoreText">0</span></p></section>
   <div class="round panel">ROUND<br><strong id="roundNum">01</strong></div>
   <div class="dog" id="dog"><div class="dog-tail"></div><div class="dog-body"></div><div class="dog-ear"></div><div class="dog-head"></div><div class="dog-snout"></div><div class="dog-eye"></div><div class="dog-leg leg1"></div><div class="dog-leg leg2"></div></div>
